@@ -10,8 +10,6 @@ browser.get(url)
 
 browser.find_element_by_link_text("가는날 선택").click()
 
-
-
 browser.find_elements_by_link_text("27")[0].click()
 browser.find_elements_by_link_text("28")[1].click()
 
