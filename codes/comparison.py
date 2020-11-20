@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
-browser = webdriver.Chrome('./chromedriver.exe')
+browser = webdriver.Chrome('../chromedriver.exe')
 browser.maximize_window()
 url = "https://flight.naver.com/flights/"
 browser.get(url)
