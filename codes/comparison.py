@@ -5,6 +5,8 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from bs4 import BeautifulSoup
 
+from datetime import date, timedelta
+
 def check_domestic(domestic_boolean: bool) -> str:
     if domestic_boolean == True:
         return "domestic"
@@ -33,26 +35,31 @@ def get_international_rt_url(Departure_airport, Arrive_airport, Adult_num, Child
 # User Input
 reservation = True
 search_period = 7
-domestic_departure_airport = "GMP"
-international_departure_airport = "ICN,%20GMP"
 arrival_airport = "USN"
 adult_num = 1
 child_num = 0 
 infant_num = 0
 
-departure_date_year = 2020
-departure_date_month = 11
-departure_date_date = 21
+start_year = 2020
+start_month = 11
+start_date = 30
 
-return_date_year = 2020
-return_date_month = 3
-return_date_date = 1
+end_year = 2020
+end_month = 12
+end_date = 2
+
 
 # Example URL : https://flight.naver.com/flights/results/domestic?trip=OW&fareType=YC&scity1=GMP&ecity1=USN&adult=1&child=1&infant=1&sdate1=2021.11.06.
 
 # Variables for Algorithm
-
+domestic_departure_airport = "GMP"
+international_departure_airport = "ICN,%20GMP"
 flight_tickets = []
+
+start_day = date(start_year, start_month, start_date)
+end_day = date(end_year, end_month, end_date)
+delta = end_day - start_day
+
 
 #################
 #################
@@ -63,9 +70,15 @@ flight_tickets = []
 browser = webdriver.Chrome('./chromedriver.exe')
 browser.maximize_window()
 
+# Check for Period
 try:
-    for date in range(search_period):
-        url = get_domestic_ow_url(domestic_departure_airport, arrival_airport, adult_num, child_num, infant_num,str(departure_date_year) + "." + str(departure_date_month) + "." + str(departure_date_date + date))
+    for i in range(delta.days + 1):
+        day = start_day + timedelta(days=i)
+        str_day = str(day)
+        str_day.replace("-",".")
+        
+        url = get_domestic_ow_url(domestic_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
+        
         browser.get(url)
         sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
         sort.click()
@@ -75,7 +88,7 @@ try:
         soup = BeautifulSoup(browser.page_source, "lxml")
         tickets = soup.find_all("li", attrs={"class":"trip_result_item ng-scope"})
         
-        flight_tickets.append(str(departure_date_year) + "." + str(departure_date_month) + "." + str(departure_date_date + date))
+        flight_tickets.append(str_day)
         
         for ticket in tickets:
             flight_tickets.append(ticket.text)
