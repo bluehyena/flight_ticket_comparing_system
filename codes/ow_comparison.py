@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 
 from datetime import date, timedelta
 
+import gui
+
 def check_domestic(domestic_boolean: bool) -> str:
     if domestic_boolean == True:
         return "domestic"
@@ -31,14 +33,14 @@ def get_international_ow_url(Departure_airport, Arrive_airport, Adult_num, Child
 def get_international_rt_url(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date, Return_date) -> str:
     return "https://flight.naver.com/v2/flights/results?trip=RT&fareType=YC&scity1={}&ecity1={}&adult={}&child={}&infant={}&sdate1={}&date2={}".format(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date, Return_date)
 
-
 # User Input
 
 """
 받아야 하는 값
-1. 왕복,편도
-2. 서치할 기간 (시작일, 끝나는일) -> 년,월,일을 각각 따로 받아야함
-3. 인원수
+1. 목적지 
+2. 왕복,편도
+3. 서치할 기간 (시작일, 끝나는일) -> 년,월,일을 각각 따로 받아야함
+4. 인원수
 """
 
 reservation = True
@@ -48,12 +50,12 @@ child_num = 0
 infant_num = 0
 
 start_year = 2020
-start_month = 12
-start_date = 1
+start_month = 11
+start_date = 30
 
 end_year = 2020
 end_month = 12
-end_date = 8
+end_date = 1
 
 # Example URL : https://flight.naver.com/flights/results/domestic?trip=OW&fareType=YC&scity1=GMP&ecity1=USN&adult=1&child=1&infant=1&sdate1=2021.11.06.
 
@@ -91,7 +93,7 @@ try:
         
         flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
         flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
-        flight_seats = soup.find_all("span", attrs={"class":"sp_flight ico_seat"})
+        flight_seats = soup.find_all("div", attrs={"class":"txt_seat ng-binding"})
         flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
         
         for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
