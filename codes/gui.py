@@ -386,15 +386,33 @@ class UISeventh(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
     def createLayoutSeventh(self):
-
         vbox = QVBoxLayout(self.centralwidget)
+        for line in ow_comparison.ow_domestic_compare(inputData):
+            hbox = QHBoxLayout()
+            self.label1 = QLabel(line[3])
+            self.label1.setFont(self.systemFont)
+            self.label1.setFixedHeight(50)
+
+            self.label2 = QLabel(line[1][6:11])
+            self.label2.setFont(self.systemFont)
+            self.label2.setFixedHeight(50)
+
+            self.label3 = QLabel(str(line[4]))
+            self.label3.setFont(self.systemFont)
+            self.label3.setFixedHeight(50)
+
+            print(line[3])
+            hbox.addWidget(self.label1)
+            hbox.addWidget(self.label2)
+            hbox.addWidget(self.label3)
+            vbox.addLayout(hbox)
 
         return vbox
 
 
 if __name__ == '__main__':
-    for line in ow_comparison.ow_domestic_compare(['CJU', '편도', '2020', '11', '28', '2020', '11', '30', '0명', '0명', '1명']):
-        print(line)
+    # for line in ow_comparison.ow_domestic_compare(['CJU', '편도', '2020', '11', '28', '2020', '11', '30', '0명', '0명', '1명']):
+    #     print(line)
     app = QApplication(sys.argv)
     ex = MainWindow()
     sys.exit(app.exec_())
