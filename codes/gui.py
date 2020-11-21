@@ -390,6 +390,10 @@ class UISeventh(object):
 
         return vbox
 
+class InputData():
+    def returnData(self):
+        return inputData
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MainWindow()
