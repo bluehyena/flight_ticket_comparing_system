@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 
 from datetime import date, timedelta
 
-import gui
 
 def check_domestic(domestic_boolean: bool) -> str:
     if domestic_boolean == True:

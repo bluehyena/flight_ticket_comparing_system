@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 
 from datetime import date, timedelta
 
-import gui
 
 def check_domestic(domestic_boolean: bool) -> str:
     if domestic_boolean == True:
@@ -43,19 +42,20 @@ def get_international_rt_url(Departure_airport, Arrive_airport, Adult_num, Child
 4. 인원수
 """
 def ow_domestic_compare(inputdata: list) -> str:
-    reservation = True
-    arrival_airport = "CJU"
-    adult_num = 1
-    child_num = 0 
-    infant_num = 0
+    arrival_airport = inputdata[0]
+    reservation = inputdata[1]
 
-    start_year = 2020
-    start_month = 11
-    start_date = 29
+    start_year = int(inputdata[2])
+    start_month = int(inputdata[3])
+    start_date = int(inputdata[4])
 
-    end_year = 2020
-    end_month = 12
-    end_date = 1
+    end_year = int(inputdata[5])
+    end_month = int(inputdata[6])
+    end_date = int(inputdata[7])
+
+    infant_num = int(inputdata[8].replace("명", ""))
+    child_num = int(inputdata[9].replace("명", ""))
+    adult_num = int(inputdata[10].replace("명", ""))
 
     # Example URL : https://flight.naver.com/flights/results/domestic?trip=OW&fareType=YC&scity1=GMP&ecity1=USN&adult=1&child=1&infant=1&sdate1=2021.11.06.
 
@@ -69,7 +69,7 @@ def ow_domestic_compare(inputdata: list) -> str:
     end_day = date(end_year, end_month, end_date)
     delta = end_day - start_day
 
-    browser = webdriver.Chrome('./chromedriver.exe')
+    browser = webdriver.Chrome('../chromedriver.exe')
     browser.maximize_window()
 
     try:
@@ -89,7 +89,7 @@ def ow_domestic_compare(inputdata: list) -> str:
             price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
             price_sort.click()
 
-            soup = BeautifulSoup(browser.page_source, "lxml")
+            soup = BeautifulSoup(browser.page_source, "html.parser")
             
             flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
             flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
@@ -109,6 +109,6 @@ def ow_domestic_compare(inputdata: list) -> str:
 
     finally:
         sorted_flight_tickets = sorted(flight_tickets, key=lambda ticket: ticket[4])
-        for sorted_flight_ticket in sorted_flight_tickets:
-            return sorted_flight_ticket
+
+        return sorted_flight_tickets
         browser.quit()

@@ -3,6 +3,7 @@
 import csv
 import datetime
 import sys
+import ow_comparison, rt_comparison
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (QApplication, QWidget, QGroupBox, QHBoxLayout, QRadioButton, QCheckBox, QPushButton, QMenu,
                              QGridLayout, QVBoxLayout, QLabel, QCalendarWidget, QLineEdit, QLayout, QComboBox,
@@ -43,7 +44,7 @@ class MainWindow(QMainWindow):
         self.uiFourth.setupUI(self)
         if(inputData[1] == '왕복'):
             self.uiFourth.pushButton.clicked.connect(self.startUIFifth)
-        elif(inputData([1] == '편도')):
+        elif(inputData[1] == '편도'):
             self.uiFourth.pushButton.clicked.connect(self.startUISixth)
         self.show()
 
@@ -390,11 +391,10 @@ class UISeventh(object):
 
         return vbox
 
-class InputData():
-    def returnData(self):
-        return inputData
 
 if __name__ == '__main__':
+    for line in ow_comparison.ow_domestic_compare(['CJU', '편도', '2020', '11', '28', '2020', '11', '30', '0명', '0명', '1명']):
+        print(line)
     app = QApplication(sys.argv)
     ex = MainWindow()
     sys.exit(app.exec_())
