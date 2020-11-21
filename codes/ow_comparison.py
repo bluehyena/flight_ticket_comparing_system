@@ -44,14 +44,14 @@ def get_international_rt_url(Departure_airport, Arrive_airport, Adult_num, Child
 """
 
 reservation = True
-arrival_airport = "USN"
+arrival_airport = "CJU"
 adult_num = 1
 child_num = 0 
 infant_num = 0
 
 start_year = 2020
 start_month = 11
-start_date = 30
+start_date = 29
 
 end_year = 2020
 end_month = 12
