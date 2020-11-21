@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 
 from datetime import date, timedelta
 
+import csv
+
 def check_domestic(domestic_boolean: bool) -> str:
     if domestic_boolean == True:
         return "domestic"
@@ -33,8 +35,17 @@ def get_international_rt_url(Departure_airport, Arrive_airport, Adult_num, Child
 
 
 # User Input
+
+"""
+
+받아야 하는 값
+1. 왕복,편도
+2. 서치할 기간 (시작일, 끝나는일) -> 년,월,일을 각각 따로 받아야함
+3. 인원수
+
+"""
+
 reservation = True
-search_period = 7
 arrival_airport = "USN"
 adult_num = 1
 child_num = 0 
@@ -46,8 +57,7 @@ start_date = 30
 
 end_year = 2020
 end_month = 12
-end_date = 2
-
+end_date = 1
 
 # Example URL : https://flight.naver.com/flights/results/domestic?trip=OW&fareType=YC&scity1=GMP&ecity1=USN&adult=1&child=1&infant=1&sdate1=2021.11.06.
 
@@ -55,11 +65,16 @@ end_date = 2
 domestic_departure_airport = "GMP"
 international_departure_airport = "ICN,%20GMP"
 flight_tickets = []
+ticket_prices = []
 
 start_day = date(start_year, start_month, start_date)
 end_day = date(end_year, end_month, end_date)
 delta = end_day - start_day
 
+ticket_num = 0
+
+extender = ".csv"
+filename = "flight_ticket_lists"
 
 #################
 #################
@@ -70,9 +85,13 @@ delta = end_day - start_day
 browser = webdriver.Chrome('./chromedriver.exe')
 browser.maximize_window()
 
+f = open(filename + extender, "w", encoding="utf-8-sig", newline="")
+writer = csv.writer(f)
+
 # Check for Period
 try:
     for i in range(delta.days + 1):
+        # 티켓 리스트 = [항공사, 정보, 좌석등급, 날짜, 가격]
         day = start_day + timedelta(days=i)
         str_day = str(day)
         str_day.replace("-",".")
@@ -86,16 +105,30 @@ try:
         price_sort.click()
 
         soup = BeautifulSoup(browser.page_source, "lxml")
-        tickets = soup.find_all("li", attrs={"class":"trip_result_item ng-scope"})
         
-        flight_tickets.append(str_day)
+        # tickets = soup.find_all("li", attrs={"class":"trip_result_item ng-scope"})
         
-        for ticket in tickets:
-            flight_tickets.append(ticket.text)
-    
-    for flight_ticket in flight_tickets:
-        print(flight_ticket)
+        flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
+        flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
+        flight_seats = soup.find_all("span", attrs={"class":"sp_flight ico_seat"})
+        flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
+
+        # flight_tickets.append(str_day)
+        
+        for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
+            list_for_append = []
+            list_for_append.append(flight_company.text)
+            list_for_append.append(flight_info.text)
+            list_for_append.append(flight_seat.text)
+            list_for_append.append(str(day))
+            flight_price = flight_price.text
+            flight_price = flight_price.replace(",","")
+            list_for_append.append(int(flight_price))
+            flight_tickets.append(list_for_append)
 
 finally:
+    sorted_flight_tickets = sorted(flight_tickets, key=lambda ticket: ticket[4])
+    for sorted_flight_ticket in sorted_flight_tickets:
+        print(sorted_flight_ticket)
     browser.quit()
 
