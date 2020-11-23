@@ -99,7 +99,7 @@ def ow_compare(inputdata: list) -> list:
                 price_sort = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
 
-                elements = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[3]/div[1]/div[7]/ul/li[1]")))
+                time.sleep(5)
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
                 
@@ -242,7 +242,7 @@ def rt_compare(inputdata: list) -> str:
                 price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
 
-                elements = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[3]/div[1]/div[7]/ul/li[1]")))
+                time.sleep(5)
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
 
@@ -271,7 +271,7 @@ def rt_compare(inputdata: list) -> str:
                 price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
 
-                elements = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[3]/div[1]/div[7]/ul/li[1]")))
+                time.sleep(5)
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
 
