@@ -26,7 +26,7 @@ def get_domestic_ow_url(Departure_airport, Arrive_airport, Adult_num, Child_num,
 #     return "https://flight.naver.com/flights/results/domestic?trip=RT&fareType=YC&scity1={}&ecity1={}&adult={}&child={}&infant={}&sdate1={}&date2={}".format(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date, Return_date)
 
 def get_international_ow_url(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date) -> str:
-    return "https://flight.naver.com/v2/flights/results?trip=OWfareType=YC&scity1={}&ecity1={}&adult={}&child={}&infant={}&sdate1={}&fareType=Y&isForeign=true".format(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date)
+    return "https://flight.naver.com/flights/v2/results?trip=OW&scity1={}&ecity1={}&adult={}&child={}&infant={}&sdate1={}.&fareType=Y&isForeign=true".format(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date)
 
 # def get_international_rt_url(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date, Return_date) -> str:
 #     return "https://flight.naver.com/v2/flights/results?trip=RT&fareType=YC&scity1={}&ecity1={}&adult={}&child={}&infant={}&sdate1={}&date2={}".format(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date, Return_date)
