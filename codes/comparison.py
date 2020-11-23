@@ -206,7 +206,7 @@ def rt_compare(inputdata: list) -> str:
                 price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
                 price_sort.click()
 
-                soup = BeautifulSoup(browser.page_source, "lxml")
+                soup = BeautifulSoup(browser.page_source, "html.parser")
 
                 flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
                 flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
@@ -235,7 +235,7 @@ def rt_compare(inputdata: list) -> str:
                 price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
                 price_sort.click()
 
-                soup = BeautifulSoup(browser.page_source, "lxml")
+                soup = BeautifulSoup(browser.page_source, "html.parser")
 
                 flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
                 flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
@@ -262,7 +262,7 @@ def rt_compare(inputdata: list) -> str:
                 price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
                 price_sort.click()
 
-                soup = BeautifulSoup(browser.page_source, "lxml")
+                soup = BeautifulSoup(browser.page_source, "html.parser")
 
                 flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
                 flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
