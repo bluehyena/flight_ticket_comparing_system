@@ -144,8 +144,8 @@ def rt_compare(inputdata: list) -> str:
     # Variables for Algorithm
     domestic_departure_airport = "GMP"
     international_departure_airport = "ICN,%20GMP"
-    flight_tickets_departure = ["<가는날 항공권 입니다>"]
-    flight_tickets_return = ["<오는날 항공권 입니다>"]
+    flight_tickets_departure = []
+    flight_tickets_return = []
     ticket_prices = []
 
     start_day = date(start_year, start_month, start_date)
