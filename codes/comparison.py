@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 
 from datetime import date, timedelta
 
+import time
+
 def check_domestic(domestic_type: str) -> str:
     if domestic_type in ["CJU","PUS","USN","KWJ","RSU","TAE","YNY","GMP","ICN"]:
         return "domestic"
@@ -92,10 +94,12 @@ def ow_compare(inputdata: list) -> list:
                 url = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
 
                 browser.get(url)
-                sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+                sort = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
                 sort.click()
-                price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
+                price_sort = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
+
+                elements = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[3]/div[1]/div[7]/ul/li[1]")))
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
                 
@@ -238,6 +242,8 @@ def rt_compare(inputdata: list) -> str:
                 price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
 
+                elements = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[3]/div[1]/div[7]/ul/li[1]")))
+
                 soup = BeautifulSoup(browser.page_source, "html.parser")
 
                 flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
@@ -264,6 +270,8 @@ def rt_compare(inputdata: list) -> str:
                 sort.click()
                 price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
+
+                elements = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[3]/div[1]/div[7]/ul/li[1]")))
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
 
