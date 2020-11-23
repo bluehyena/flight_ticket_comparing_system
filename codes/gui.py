@@ -20,7 +20,6 @@ class MainWindow(QMainWindow):
         self.uiSecond = UISecond()
         self.uiThird = UIThird()
         self.uiFourth = UIFourth()
-        self.uiFifth = UIFifth()
         self.uiSixth = UISixth()
         self.uiSeventh = UISeventh()
         self.startUIFirst()
@@ -43,15 +42,7 @@ class MainWindow(QMainWindow):
 
     def startUIFourth(self):
         self.uiFourth.setupUI(self)
-        if(inputData[1] == '왕복'):
-            self.uiFourth.pushButton.clicked.connect(self.startUIFifth)
-        elif(inputData[1] == '편도'):
-            self.uiFourth.pushButton.clicked.connect(self.startUISixth)
-        self.show()
-
-    def startUIFifth(self):
-        self.uiFifth.setupUI(self)
-        self.uiFifth.pushButton.clicked.connect(self.startUISixth)
+        self.uiFourth.pushButton.clicked.connect(self.startUISixth)
         self.show()
 
     def startUISixth(self):
@@ -280,34 +271,6 @@ class UIFourth(object):
         inputData.append(self.comboBox2.currentText())
         inputData.append(self.comboBox3.currentText())
 
-class UIFifth(object):
-    def setupUI(self, MainWindow):
-        MainWindow.setWindowTitle('항공권 비교 분석기')
-        MainWindow.setGeometry(300, 300, 720, 480)
-
-        self.centralwidget = QWidget(MainWindow)
-
-        self.systemFont = QFont('Arial', 30)
-        self.layoutFourth = self.createLayoutFifth()  # 다섯 번째 화면, 왕복일 경우 여행 기간 입력
-
-        MainWindow.setCentralWidget(self.centralwidget)
-
-    def createLayoutFifth(self):
-        self.lineEdit = QLineEdit("여행 기간 입력 (숫자만, 단위 : 일)")
-        self.lineEdit.setFont(self.systemFont)
-
-        self.pushButton = QPushButton("확인")
-        self.pushButton.setFont(self.systemFont)
-        self.pushButton.clicked.connect(self.aboutPushButton)
-
-        hbox = QHBoxLayout(self.centralwidget)
-        hbox.addWidget(self.lineEdit)
-        hbox.addWidget(self.pushButton)
-        return hbox
-
-    def aboutPushButton(self):
-        inputData.append(self.lineEdit.text())
-
 class UISixth(object):
     def setupUI(self, MainWindow):
         MainWindow.setWindowTitle('항공권 비교 분석기')
@@ -388,68 +351,124 @@ class UISeventh(object):
         self.centralwidget = QWidget(MainWindow)
 
         self.systemFont = QFont('Arial', 30)
-        self.layoutSeventh = self.createLayoutSeventh()  # 일곱 번째 화면, 결과 출력
+        if inputData[1] == '편도':
+            self.layoutSeventh = self.createLayoutSeventhOW()  # 일곱 번째 화면, 결과 출력
+            MainWindow.setCentralWidget(self.centralwidget)
+        elif inputData[1] == '왕복':
+            self.layoutSeventh = self.createLayoutSeventhRT()  # 일곱 번째 화면, 결과 출력
+            MainWindow.setCentralWidget(self.centralwidget)
 
-        MainWindow.setCentralWidget(self.centralwidget)
 
-    def createLayoutSeventh(self):
+    def createLayoutSeventhOW(self):
         vbox = QVBoxLayout(self.centralwidget)
         vbox2 = QVBoxLayout()
-        groupBox = QGroupBox("group box")
-        if inputData[1] == '편도':
-            for line in comparison.ow_compare(inputData):
-                hbox = QHBoxLayout()
-                self.label1 = QLabel(line[3])
-                self.label1.setFont(self.systemFont)
-                self.label1.setFixedHeight(50)
+        groupBox = QGroupBox("가는 비행기")
 
-                self.label2 = QLabel(line[1][6:11])
-                self.label2.setFont(self.systemFont)
-                self.label2.setFixedHeight(50)
+        compareList = comparison.ow_compare(inputData)
+        for line in compareList:
+            hbox = QHBoxLayout()
+            print(line[3])
+            self.label1 = QLabel(line[3])
+            self.label1.setFont(self.systemFont)
+            self.label1.setFixedHeight(50)
 
-                self.label3 = QLabel(str(line[4]))
-                self.label3.setFont(self.systemFont)
-                self.label3.setFixedHeight(50)
+            self.label2 = QLabel(line[1][6:11])
+            self.label2.setFont(self.systemFont)
+            self.label2.setFixedHeight(50)
 
-                self.label4 = QLabel(line[0])
-                self.label4.setFont(self.systemFont)
-                self.label4.setFixedHeight(50)
+            self.label3 = QLabel(str(line[4]))
+            self.label3.setFont(self.systemFont)
+            self.label3.setFixedHeight(50)
 
-                hbox.addWidget(self.label1)
-                hbox.addWidget(self.label2)
-                hbox.addWidget(self.label3)
-                hbox.addWidget(self.label4)
-                vbox2.addLayout(hbox)
-        elif inputData[1] == '왕복':
-            for line in comparison.rt_compare(inputData):
-                hbox = QHBoxLayout()
-                self.label1 = QLabel(line[3])
-                self.label1.setFont(self.systemFont)
-                self.label1.setFixedHeight(50)
+            self.label4 = QLabel(line[0])
+            self.label4.setFont(self.systemFont)
+            self.label4.setFixedHeight(50)
 
-                self.label2 = QLabel(line[1][6:11])
-                self.label2.setFont(self.systemFont)
-                self.label2.setFixedHeight(50)
-
-                self.label3 = QLabel(str(line[4]))
-                self.label3.setFont(self.systemFont)
-                self.label3.setFixedHeight(50)
-
-                self.label4 = QLabel(line[0])
-                self.label4.setFont(self.systemFont)
-                self.label4.setFixedHeight(50)
-
-                hbox.addWidget(self.label1)
-                hbox.addWidget(self.label2)
-                hbox.addWidget(self.label3)
-                hbox.addWidget(self.label4)
-                vbox2.addLayout(hbox)
+            hbox.addWidget(self.label1)
+            hbox.addWidget(self.label2)
+            hbox.addWidget(self.label3)
+            hbox.addWidget(self.label4)
+            vbox2.addLayout(hbox)
         groupBox.setLayout(vbox2)
         scrollArea = QScrollArea()
         scrollArea.setWidget(groupBox)
         scrollArea.setWidgetResizable(True)
         scrollArea.setFixedHeight(400)
+
         vbox.addWidget(scrollArea)
+        return vbox
+    def createLayoutSeventhRT(self):
+        vbox = QVBoxLayout(self.centralwidget)
+        vbox2 = QVBoxLayout()
+        vbox3 = QVBoxLayout()
+        groupBox = QGroupBox("가는 비행기")
+        groupBox2 = QGroupBox("오는 비행기")
+
+        compareList = comparison.rt_compare(inputData)
+        
+        for line in compareList[0]:
+            hbox = QHBoxLayout()
+            print(line[3])
+            self.label1 = QLabel(line[3])
+            self.label1.setFont(self.systemFont)
+            self.label1.setFixedHeight(50)
+
+            self.label2 = QLabel(line[1][6:11])
+            self.label2.setFont(self.systemFont)
+            self.label2.setFixedHeight(50)
+
+            self.label3 = QLabel(str(line[4]))
+            self.label3.setFont(self.systemFont)
+            self.label3.setFixedHeight(50)
+
+            self.label4 = QLabel(line[0])
+            self.label4.setFont(self.systemFont)
+            self.label4.setFixedHeight(50)
+
+            hbox.addWidget(self.label1)
+            hbox.addWidget(self.label2)
+            hbox.addWidget(self.label3)
+            hbox.addWidget(self.label4)
+            vbox2.addLayout(hbox)
+        for line in compareList[1]:
+            hbox = QHBoxLayout()
+            self.label1 = QLabel(line[3])
+            self.label1.setFont(self.systemFont)
+            self.label1.setFixedHeight(50)
+
+            self.label2 = QLabel(line[1][6:11])
+            self.label2.setFont(self.systemFont)
+            self.label2.setFixedHeight(50)
+
+            self.label3 = QLabel(str(line[4]))
+            self.label3.setFont(self.systemFont)
+            self.label3.setFixedHeight(50)
+
+            self.label4 = QLabel(line[0])
+            self.label4.setFont(self.systemFont)
+            self.label4.setFixedHeight(50)
+
+            hbox.addWidget(self.label1)
+            hbox.addWidget(self.label2)
+            hbox.addWidget(self.label3)
+            hbox.addWidget(self.label4)
+            vbox3.addLayout(hbox)
+
+        groupBox.setLayout(vbox2)
+        scrollArea = QScrollArea()
+        scrollArea.setWidget(groupBox)
+        scrollArea.setWidgetResizable(True)
+        scrollArea.setFixedHeight(400)
+
+        groupBox2.setLayout(vbox3)
+        scrollArea2 = QScrollArea()
+        scrollArea2.setWidget(groupBox2)
+        scrollArea2.setWidgetResizable(True)
+        scrollArea2.setFixedHeight(400)
+
+        vbox.addWidget(scrollArea)
+        vbox.addWidget(scrollArea2)
+
         return vbox
 
     def scrollbar(self):
@@ -457,7 +476,7 @@ class UISeventh(object):
             self.add_widget()
 
 if __name__ == '__main__':
-    # comparison.ow_compare(['CJU', '편도', '2020', '12', '1', '2020', '12', '1', '0명', '0명', '1명'])
+    print(comparison.ow_compare(['KIX', '편도', '2020', '12', '1', '2020', '12', '1', '0명', '0명', '1명']))
     # for line in ow_comparison.ow_domestic_compare(['CJU', '편도', '2020', '11', '28', '2020', '11', '30', '0명', '0명', '1명']):
     #     print(line)
     app = QApplication(sys.argv)

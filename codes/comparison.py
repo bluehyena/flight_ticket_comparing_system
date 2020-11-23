@@ -99,7 +99,7 @@ def ow_compare(inputdata: list) -> list:
                 price_sort = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
 
-                time.sleep(5)
+                time.sleep(25)
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
                 
@@ -137,11 +137,10 @@ def rt_compare(inputdata: list) -> str:
     end_month = int(inputdata[6])
     end_date = int(inputdata[7])
 
-    infant_num = int(inputdata[9].replace("명", ""))
-    child_num = int(inputdata[10].replace("명", ""))
-    adult_num = int(inputdata[11].replace("명", ""))
+    infant_num = int(inputdata[8].replace("명", ""))
+    child_num = int(inputdata[9].replace("명", ""))
+    adult_num = int(inputdata[10].replace("명", ""))
 
-    period = int(inputdata[8])
 
     # Example URL : https://flight.naver.com/flights/results/domestic?trip=OW&fareType=YC&scity1=GMP&ecity1=USN&adult=1&child=1&infant=1&sdate1=2021.11.06.
 
@@ -242,7 +241,7 @@ def rt_compare(inputdata: list) -> str:
                 price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
 
-                time.sleep(5)
+                time.sleep(25)
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
 
