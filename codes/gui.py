@@ -396,26 +396,54 @@ class UISeventh(object):
         vbox = QVBoxLayout(self.centralwidget)
         vbox2 = QVBoxLayout()
         groupBox = QGroupBox("group box")
+        if inputData[1] == '편도':
+            for line in comparison.ow_compare(inputData):
+                hbox = QHBoxLayout()
+                self.label1 = QLabel(line[3])
+                self.label1.setFont(self.systemFont)
+                self.label1.setFixedHeight(50)
 
-        for line in comparison.ow_compare(inputData):
-            hbox = QHBoxLayout()
-            self.label1 = QLabel(line[3])
-            self.label1.setFont(self.systemFont)
-            self.label1.setFixedHeight(50)
+                self.label2 = QLabel(line[1][6:11])
+                self.label2.setFont(self.systemFont)
+                self.label2.setFixedHeight(50)
 
-            self.label2 = QLabel(line[1][6:11])
-            self.label2.setFont(self.systemFont)
-            self.label2.setFixedHeight(50)
+                self.label3 = QLabel(str(line[4]))
+                self.label3.setFont(self.systemFont)
+                self.label3.setFixedHeight(50)
 
-            self.label3 = QLabel(str(line[4]))
-            self.label3.setFont(self.systemFont)
-            self.label3.setFixedHeight(50)
+                self.label4 = QLabel(line[0])
+                self.label4.setFont(self.systemFont)
+                self.label4.setFixedHeight(50)
 
-            hbox.addWidget(self.label1)
-            hbox.addWidget(self.label2)
-            hbox.addWidget(self.label3)
-            vbox2.addLayout(hbox)
+                hbox.addWidget(self.label1)
+                hbox.addWidget(self.label2)
+                hbox.addWidget(self.label3)
+                hbox.addWidget(self.label4)
+                vbox2.addLayout(hbox)
+        elif inputData[1] == '왕복':
+            for line in comparison.rt_compare(inputData):
+                hbox = QHBoxLayout()
+                self.label1 = QLabel(line[3])
+                self.label1.setFont(self.systemFont)
+                self.label1.setFixedHeight(50)
 
+                self.label2 = QLabel(line[1][6:11])
+                self.label2.setFont(self.systemFont)
+                self.label2.setFixedHeight(50)
+
+                self.label3 = QLabel(str(line[4]))
+                self.label3.setFont(self.systemFont)
+                self.label3.setFixedHeight(50)
+
+                self.label4 = QLabel(line[0])
+                self.label4.setFont(self.systemFont)
+                self.label4.setFixedHeight(50)
+
+                hbox.addWidget(self.label1)
+                hbox.addWidget(self.label2)
+                hbox.addWidget(self.label3)
+                hbox.addWidget(self.label4)
+                vbox2.addLayout(hbox)
         groupBox.setLayout(vbox2)
         scrollArea = QScrollArea()
         scrollArea.setWidget(groupBox)
