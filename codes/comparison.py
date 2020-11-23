@@ -92,9 +92,9 @@ def ow_compare(inputdata: list) -> list:
                 url = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
 
                 browser.get(url)
-                sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+                sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
                 sort.click()
-                price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
+                price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
@@ -224,15 +224,18 @@ def rt_compare(inputdata: list) -> str:
                     list_for_append.append(int(flight_price))
                     list_for_append.append(url_return)
                     flight_tickets_return.append(list_for_append)
+            
+            # 해외
+           
             else:
                 url_departure = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
                 url_return = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_period_date + ".")
 
                 # 가는날
                 browser.get(url_departure)
-                sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+                sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
                 sort.click()
-                price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
+                price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
@@ -257,9 +260,9 @@ def rt_compare(inputdata: list) -> str:
                 # 오는날
 
                 browser.get(url_return)
-                sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+                sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
                 sort.click()
-                price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
+                price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
                 price_sort.click()
 
                 soup = BeautifulSoup(browser.page_source, "html.parser")
