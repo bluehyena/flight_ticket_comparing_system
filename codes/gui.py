@@ -80,7 +80,7 @@ class UIFirst(object):
         self.comboBox.setFixedHeight(50)
         self.comboBox.setFont(self.systemFont)
         airportList = []
-        for line in self.csvRead('../airportList.csv'):
+        for line in self.csvRead('./airportList.csv'):
             airportList.append(line[1] + '(' + line[0] + ')' + line[2])
         for airport in airportList:
             self.comboBox.addItem(airport)

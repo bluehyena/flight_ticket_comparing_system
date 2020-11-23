@@ -69,7 +69,7 @@ def ow_domestic_compare(inputdata: list) -> str:
     end_day = date(end_year, end_month, end_date)
     delta = end_day - start_day
 
-    browser = webdriver.Chrome('../chromedriver.exe')
+    browser = webdriver.Chrome('./chromedriver.exe')
     browser.maximize_window()
 
     try:
@@ -105,6 +105,7 @@ def ow_domestic_compare(inputdata: list) -> str:
                 flight_price = flight_price.text
                 flight_price = flight_price.replace(",","")
                 list_for_append.append(int(flight_price))
+                list_for_append.append(url)
                 flight_tickets.append(list_for_append)
 
     finally:

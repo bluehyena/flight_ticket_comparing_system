@@ -111,6 +111,7 @@ def rt_domestic_compare(inputdata: list) -> str:
             flight_price = flight_price.text
             flight_price = flight_price.replace(",","")
             list_for_append.append(int(flight_price))
+            list_for_append.append(url_departure)
             flight_tickets_departure.append(list_for_append)
 
         # 오는날
@@ -137,6 +138,7 @@ def rt_domestic_compare(inputdata: list) -> str:
             flight_price = flight_price.text
             flight_price = flight_price.replace(",","")
             list_for_append.append(int(flight_price))
+            list_for_append.append(url_return)
             flight_tickets_return.append(list_for_append)
 
     sorted_flight_tickets_departure = sorted(flight_tickets_departure, key=lambda ticket: ticket[4])
