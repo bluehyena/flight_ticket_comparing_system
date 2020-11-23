@@ -26,7 +26,7 @@ def get_domestic_ow_url(Departure_airport, Arrive_airport, Adult_num, Child_num,
 #     return "https://flight.naver.com/flights/results/domestic?trip=RT&fareType=YC&scity1={}&ecity1={}&adult={}&child={}&infant={}&sdate1={}&date2={}".format(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date, Return_date)
 
 def get_international_ow_url(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date) -> str:
-    return "https://flight.naver.com/v2/flights/results?trip=OWfareType=YC&scity1={}&ecity1={}&adult={}&child={}&infant={}&sdate1={}".format(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date)
+    return "https://flight.naver.com/v2/flights/results?trip=OWfareType=YC&scity1={}&ecity1={}&adult={}&child={}&infant={}&sdate1={}&fareType=Y&isForeign=true".format(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date)
 
 # def get_international_rt_url(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date, Return_date) -> str:
 #     return "https://flight.naver.com/v2/flights/results?trip=RT&fareType=YC&scity1={}&ecity1={}&adult={}&child={}&infant={}&sdate1={}&date2={}".format(Departure_airport, Arrive_airport, Adult_num, Child_num, Infant_num, Departure_date, Return_date)
@@ -37,10 +37,11 @@ def get_international_ow_url(Departure_airport, Arrive_airport, Adult_num, Child
 받아야 하는 값
 1. 목적지 
 2. 왕복,편도
+;
 3. 서치할 기간 (시작일, 끝나는일) -> 년,월,일을 각각 따로 받아야함
 4. 인원수
 """
-def ow_compare(inputdata: list) -> str:
+def ow_compare(inputdata: list) -> list:
     arrival_airport = inputdata[0]
     reservation = inputdata[1]
 
