@@ -3,11 +3,12 @@
 import csv
 import datetime
 import sys
-import ow_comparison, rt_comparison
+import comparison
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (QApplication, QWidget, QGroupBox, QHBoxLayout, QRadioButton, QCheckBox, QPushButton, QMenu,
                              QGridLayout, QVBoxLayout, QLabel, QCalendarWidget, QLineEdit, QLayout, QComboBox,
-                             QMainWindow)
+                             QMainWindow, QScrollArea)
 from PyQt5.QtCore import QDate, Qt
 
 inputData = []
@@ -80,7 +81,7 @@ class UIFirst(object):
         self.comboBox.setFixedHeight(50)
         self.comboBox.setFont(self.systemFont)
         airportList = []
-        for line in self.csvRead('./airportList.csv'):
+        for line in self.csvRead('../airportList.csv'):
             airportList.append(line[1] + '(' + line[0] + ')' + line[2])
         for airport in airportList:
             self.comboBox.addItem(airport)
@@ -159,22 +160,25 @@ class UIThird(object):
         self.label.setFixedHeight(50)
 
         self.comboBox1 = QComboBox()
-        self.comboBox1.setFixedHeight(30)
-        self.comboBox1.setFixedWidth(100)
+        self.comboBox1.setFixedHeight(50)
+        self.comboBox1.setFixedWidth(150)
+        self.comboBox1.setFont(self.systemFont)
         self.comboBox1.addItem("년")
         for year in range(2020, 2022):
             self.comboBox1.addItem(str(year))
 
         self.comboBox2 = QComboBox()
-        self.comboBox2.setFixedHeight(30)
-        self.comboBox2.setFixedWidth(100)
+        self.comboBox2.setFixedHeight(50)
+        self.comboBox2.setFixedWidth(150)
+        self.comboBox2.setFont(self.systemFont)
         self.comboBox2.addItem("월")
         for month in range(1, 13):
             self.comboBox2.addItem(str(month))
 
         self.comboBox3 = QComboBox()
-        self.comboBox3.setFixedHeight(30)
-        self.comboBox3.setFixedWidth(100)
+        self.comboBox3.setFixedHeight(50)
+        self.comboBox3.setFixedWidth(150)
+        self.comboBox3.setFont(self.systemFont)
         self.comboBox3.addItem("일")
         for day in range(1, 32):
             self.comboBox3.addItem(str(day))
@@ -225,22 +229,25 @@ class UIFourth(object):
         self.label.setFixedHeight(50)
 
         self.comboBox1 = QComboBox()
-        self.comboBox1.setFixedHeight(30)
-        self.comboBox1.setFixedWidth(100)
+        self.comboBox1.setFixedHeight(50)
+        self.comboBox1.setFixedWidth(150)
+        self.comboBox1.setFont(self.systemFont)
         self.comboBox1.addItem("년")
         for year in range(2020, 2022):
             self.comboBox1.addItem(str(year))
 
         self.comboBox2 = QComboBox()
-        self.comboBox2.setFixedHeight(30)
-        self.comboBox2.setFixedWidth(100)
+        self.comboBox2.setFixedHeight(50)
+        self.comboBox2.setFixedWidth(150)
+        self.comboBox2.setFont(self.systemFont)
         self.comboBox2.addItem("월")
         for month in range(1, 13):
             self.comboBox2.addItem(str(month))
 
         self.comboBox3 = QComboBox()
-        self.comboBox3.setFixedHeight(30)
-        self.comboBox3.setFixedWidth(100)
+        self.comboBox3.setFixedHeight(50)
+        self.comboBox3.setFixedWidth(150)
+        self.comboBox3.setFont(self.systemFont)
         self.comboBox3.addItem("일")
         for day in range(1, 32):
             self.comboBox3.addItem(str(day))
@@ -387,7 +394,10 @@ class UISeventh(object):
 
     def createLayoutSeventh(self):
         vbox = QVBoxLayout(self.centralwidget)
-        for line in ow_comparison.ow_domestic_compare(inputData):
+        vbox2 = QVBoxLayout()
+        groupBox = QGroupBox("group box")
+
+        for line in comparison.ow_compare(inputData):
             hbox = QHBoxLayout()
             self.label1 = QLabel(line[3])
             self.label1.setFont(self.systemFont)
@@ -401,16 +411,25 @@ class UISeventh(object):
             self.label3.setFont(self.systemFont)
             self.label3.setFixedHeight(50)
 
-            print(line[3])
             hbox.addWidget(self.label1)
             hbox.addWidget(self.label2)
             hbox.addWidget(self.label3)
-            vbox.addLayout(hbox)
+            vbox2.addLayout(hbox)
 
+        groupBox.setLayout(vbox2)
+        scrollArea = QScrollArea()
+        scrollArea.setWidget(groupBox)
+        scrollArea.setWidgetResizable(True)
+        scrollArea.setFixedHeight(400)
+        vbox.addWidget(scrollArea)
         return vbox
 
+    def scrollbar(self):
+        if self.ScrollBar.value() == self.ScrollBar.maximum():
+            self.add_widget()
 
 if __name__ == '__main__':
+    # comparison.ow_compare(['CJU', '편도', '2020', '12', '1', '2020', '12', '1', '0명', '0명', '1명'])
     # for line in ow_comparison.ow_domestic_compare(['CJU', '편도', '2020', '11', '28', '2020', '11', '30', '0명', '0명', '1명']):
     #     print(line)
     app = QApplication(sys.argv)
