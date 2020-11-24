@@ -397,6 +397,7 @@ class UISeventh(object):
 
         vbox.addWidget(scrollArea)
         return vbox
+    
     def createLayoutSeventhRT(self):
         vbox = QVBoxLayout(self.centralwidget)
         vbox2 = QVBoxLayout()
