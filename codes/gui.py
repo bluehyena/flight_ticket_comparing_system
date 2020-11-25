@@ -477,7 +477,6 @@ class UISeventh(object):
             self.add_widget()
 
 if __name__ == '__main__':
-    print(comparison.ow_compare(['KIX', '편도', '2020', '12', '1', '2020', '12', '1', '0명', '0명', '1명']))
     # for line in ow_comparison.ow_domestic_compare(['CJU', '편도', '2020', '11', '28', '2020', '11', '30', '0명', '0명', '1명']):
     #     print(line)
     app = QApplication(sys.argv)
