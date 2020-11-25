@@ -290,9 +290,9 @@ def rt_compare(inputdata: list) -> str:
     finally:    
         sorted_ticket_list = []
         sorted_flight_tickets_departure = sorted(flight_tickets_departure, key=lambda ticket: ticket[4])
-        sorted_ticket_list.append(sorted_flight_tickets_departure)
+        sorted_ticket_list.extend(sorted_flight_tickets_departure)
         sorted_flight_tickets_return = sorted(flight_tickets_return, key=lambda ticket: ticket[4])
-        sorted_ticket_list.append(sorted_flight_tickets_return)
+        sorted_ticket_list.extend(sorted_flight_tickets_return)
         browser.quit()
         return sorted_ticket_list
 
