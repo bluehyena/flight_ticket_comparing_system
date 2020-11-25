@@ -108,16 +108,16 @@ def ow_compare(inputdata: list) -> list:
                 flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
                 
                 for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
-                    list_for_append = []
-                    list_for_append.append(flight_company.text)
-                    list_for_append.append(flight_info.text)
-                    list_for_append.append(flight_seat.text)
-                    list_for_append.append(str(day))
+                    list_for_extend = []
+                    list_for_extend.extend(flight_company.text)
+                    list_for_extend.extend(flight_info.text)
+                    list_for_extend.extend(flight_seat.text)
+                    list_for_extend.extend(str(day))
                     flight_price = flight_price.text
                     flight_price = flight_price.replace(",","")
-                    list_for_append.append(int(flight_price))
-                    list_for_append.append(url)
-                    flight_tickets.append(list_for_append)
+                    list_for_extend.extend(int(flight_price))
+                    list_for_extend.extend(url)
+                    flight_tickets.extend(list_for_extend)
 
     finally:
         sorted_flight_tickets = sorted(flight_tickets, key=lambda ticket: ticket[4])
@@ -249,16 +249,16 @@ def rt_compare(inputdata: list) -> str:
                 flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
                         
                 for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
-                    list_for_append = []
-                    list_for_append.append(flight_company.text)
-                    list_for_append.append(flight_info.text)
-                    list_for_append.append(flight_seat.text)
-                    list_for_append.append(str(day))
+                    list_for_extend = []
+                    list_for_extend.extend(flight_company.text)
+                    list_for_extend.extend(flight_info.text)
+                    list_for_extend.extend(flight_seat.text)
+                    list_for_extend.extend(str(day))
                     flight_price = flight_price.text
                     flight_price = flight_price.replace(",","")
-                    list_for_append.append(int(flight_price))
-                    list_for_append.append(url_departure)
-                    flight_tickets_departure.append(list_for_append)
+                    list_for_extend.extend(int(flight_price))
+                    list_for_extend.extend(url_departure)
+                    flight_tickets_departure.extend(list_for_extend)
 
                 # 오는날
 
@@ -277,23 +277,23 @@ def rt_compare(inputdata: list) -> str:
                 flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
                         
                 for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
-                    list_for_append = []
-                    list_for_append.append(flight_company.text)
-                    list_for_append.append(flight_info.text)
-                    list_for_append.append(flight_seat.text)
-                    list_for_append.append(str(day))
+                    list_for_extend = []
+                    list_for_extend.extend(flight_company.text)
+                    list_for_extend.extend(flight_info.text)
+                    list_for_extend.extend(flight_seat.text)
+                    list_for_extend.extend(str(day))
                     flight_price = flight_price.text
                     flight_price = flight_price.replace(",","")
-                    list_for_append.append(int(flight_price))
-                    list_for_append.append(url_return)
-                    flight_tickets_return.append(list_for_append)    
-    finally:
-        
+                    list_for_extend.extend(int(flight_price))
+                    list_for_extend.extend(url_departure)
+                    flight_tickets_departure.extend(list_for_extend) 
+    finally:    
         sorted_ticket_list = []
         sorted_flight_tickets_departure = sorted(flight_tickets_departure, key=lambda ticket: ticket[4])
         sorted_ticket_list.append(sorted_flight_tickets_departure)
         sorted_flight_tickets_return = sorted(flight_tickets_return, key=lambda ticket: ticket[4])
         sorted_ticket_list.append(sorted_flight_tickets_return)
-        return sorted_ticket_list
         browser.quit()
+        return sorted_ticket_list
+
 
