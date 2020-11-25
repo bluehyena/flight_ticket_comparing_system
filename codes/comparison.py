@@ -48,7 +48,12 @@ def ow_compare(inputdata: list) -> list:
     end_day = date(end_year, end_month, end_date)
     delta = end_day - start_day
 
-    browser = webdriver.Chrome('../chromedriver.exe')
+    options = webdriver.ChromeOptions()
+    options.headless = True
+    options.add_argument("window-size=1920x1080")
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36")
+
+    browser = webdriver.Chrome('./chromedriver.exe', options=options)
     browser.maximize_window()
 
     for i in range(delta.days + 1):
@@ -64,7 +69,7 @@ def ow_compare(inputdata: list) -> list:
             url = get_domestic_ow_url(domestic_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
 
             browser.get(url)
-            sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+            sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[3]/div[1]/div[3]/div[1]/a/span[2]")))
             sort.click()
             price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
             price_sort.click()
@@ -93,10 +98,6 @@ def ow_compare(inputdata: list) -> list:
 
             browser.get(url)
             time.sleep(10)
-            sort = WebDriverWait(browser, 5).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
-            sort.click()
-            price_sort = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
-            price_sort.click()
 
             soup = BeautifulSoup(browser.page_source, "html.parser")
             
@@ -107,15 +108,15 @@ def ow_compare(inputdata: list) -> list:
             
             for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
                 list_for_extend = []
-                list_for_extend.extend(flight_company.text)
-                list_for_extend.extend(flight_info.text)
-                list_for_extend.extend(flight_seat.text)
-                list_for_extend.extend(str(day))
+                list_for_extend.append(flight_company.text)
+                list_for_extend.append(flight_info.text)
+                list_for_extend.append(flight_seat.text)
+                list_for_extend.append(str(day))
                 flight_price = flight_price.text
                 flight_price = flight_price.replace(",","")
-                list_for_extend.extend(int(flight_price))
-                list_for_extend.extend(url)
-                flight_tickets.extend(list_for_extend)
+                list_for_extend.append(int(flight_price))
+                list_for_extend.append(url)
+                flight_tickets.append(list_for_extend)
 
     sorted_flight_tickets = sorted(flight_tickets, key=lambda ticket: ticket[4])
     return sorted_flight_tickets
@@ -143,6 +144,7 @@ def rt_compare(inputdata: list) -> list:
     # Variables for Algorithm
     domestic_departure_airport = "GMP"
     international_departure_airport = "ICN,%20GMP"
+    international_back_airport = "ICN"
     flight_tickets_departure = []
     flight_tickets_return = []
 
@@ -150,7 +152,12 @@ def rt_compare(inputdata: list) -> list:
     end_day = date(end_year, end_month, end_date)
     delta = end_day - start_day
 
-    browser = webdriver.Chrome('../chromedriver.exe')
+    options = webdriver.ChromeOptions()
+    options.headless = True
+    options.add_argument("window-size=1920x1080")
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36")
+
+    browser = webdriver.Chrome('./chromedriver.exe', options=options)
     browser.maximize_window()
 
     # 왕복
@@ -227,16 +234,12 @@ def rt_compare(inputdata: list) -> list:
         
         else:
             url_departure = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
-            url_return = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_period_date + ".")
+            url_return = get_international_ow_url(arrival_airport, international_back_airport, adult_num, child_num, infant_num, str_period_date + ".")
 
             # 가는날
             browser.get(url_departure)
             time.sleep(10)
-            sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
-            sort.click()
-            price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
-            price_sort.click()
-
+            
             soup = BeautifulSoup(browser.page_source, "html.parser")
 
             flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
@@ -246,24 +249,20 @@ def rt_compare(inputdata: list) -> list:
                     
             for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
                 list_for_extend = []
-                list_for_extend.extend(flight_company.text)
-                list_for_extend.extend(flight_info.text)
-                list_for_extend.extend(flight_seat.text)
-                list_for_extend.extend(str(day))
+                list_for_extend.append(flight_company.text)
+                list_for_extend.append(flight_info.text)
+                list_for_extend.append(flight_seat.text)
+                list_for_extend.append(str(day))
                 flight_price = flight_price.text
                 flight_price = flight_price.replace(",","")
-                list_for_extend.extend(int(flight_price))
-                list_for_extend.extend(url_departure)
-                flight_tickets_departure.extend(list_for_extend)
+                list_for_extend.append(int(flight_price))
+                list_for_extend.append(url_return)
+                flight_tickets_departure.append(list_for_extend) 
 
             # 오는날
 
             browser.get(url_return)
             time.sleep(10)
-            sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
-            sort.click()
-            price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
-            price_sort.click()
 
             soup = BeautifulSoup(browser.page_source, "html.parser")
 
@@ -274,21 +273,21 @@ def rt_compare(inputdata: list) -> list:
                     
             for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
                 list_for_extend = []
-                list_for_extend.extend(flight_company.text)
-                list_for_extend.extend(flight_info.text)
-                list_for_extend.extend(flight_seat.text)
-                list_for_extend.extend(str(day))
+                list_for_extend.append(flight_company.text)
+                list_for_extend.append(flight_info.text)
+                list_for_extend.append(flight_seat.text)
+                list_for_extend.append(str(day))
                 flight_price = flight_price.text
                 flight_price = flight_price.replace(",","")
-                list_for_extend.extend(int(flight_price))
-                list_for_extend.extend(url_departure)
-                flight_tickets_departure.extend(list_for_extend) 
+                list_for_extend.append(int(flight_price))
+                list_for_extend.append(url_return)
+                flight_tickets_return.append(list_for_extend) 
     
     sorted_ticket_list = []
     sorted_flight_tickets_departure = sorted(flight_tickets_departure, key=lambda ticket: ticket[4])
-    sorted_ticket_list.extend(sorted_flight_tickets_departure)
+    sorted_ticket_list.append(sorted_flight_tickets_departure)
     sorted_flight_tickets_return = sorted(flight_tickets_return, key=lambda ticket: ticket[4])
-    sorted_ticket_list.extend(sorted_flight_tickets_return)
+    sorted_ticket_list.append(sorted_flight_tickets_return)
     browser.quit()
-    
+    print(sorted_ticket_list)
     return sorted_ticket_list
