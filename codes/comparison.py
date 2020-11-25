@@ -43,7 +43,6 @@ def ow_compare(inputdata: list) -> list:
     domestic_departure_airport = "GMP"
     international_departure_airport = "ICN,%20GMP"
     flight_tickets = []
-    ticket_prices = []
 
     start_day = date(start_year, start_month, start_date)
     end_day = date(end_year, end_month, end_date)
@@ -52,79 +51,77 @@ def ow_compare(inputdata: list) -> list:
     browser = webdriver.Chrome('../chromedriver.exe')
     browser.maximize_window()
 
-    try:
-        for i in range(delta.days + 1):
+    for i in range(delta.days + 1):
+        
+        # Ticket_Lists = [Company, Infomation, Class, Date, Price]
+        
+        day = start_day + timedelta(days=i)
+        str_day = str(day)
+        str_day.replace("-",".")
+        
+        # Check domestic and make URL
+        if check_domestic(arrival_airport) == "domestic":
+            url = get_domestic_ow_url(domestic_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
+
+            browser.get(url)
+            sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+            sort.click()
+            price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
+            price_sort.click()
+
+            soup = BeautifulSoup(browser.page_source, "html.parser")
             
-            # Ticket_Lists = [Company, Infomation, Class, Date, Price]
+            flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
+            flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
+            flight_seats = soup.find_all("div", attrs={"class":"txt_seat ng-binding"})
+            flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
             
-            day = start_day + timedelta(days=i)
-            str_day = str(day)
-            str_day.replace("-",".")
+            for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
+                list_for_append = []
+                list_for_append.append(flight_company.text)
+                list_for_append.append(flight_info.text)
+                list_for_append.append(flight_seat.text)
+                list_for_append.append(str(day))
+                flight_price = flight_price.text
+                flight_price = flight_price.replace(",","")
+                list_for_append.append(int(flight_price))
+                list_for_append.append(url)
+                flight_tickets.append(list_for_append)
+        # 해외
+        else:
+            url = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
+
+            browser.get(url)
+            time.sleep(10)
+            sort = WebDriverWait(browser, 5).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+            sort.click()
+            price_sort = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
+            price_sort.click()
+
+            soup = BeautifulSoup(browser.page_source, "html.parser")
             
-            # Check domestic and make URL
-            if check_domestic(arrival_airport) == "domestic":
-                url = get_domestic_ow_url(domestic_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
+            flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
+            flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
+            flight_seats = soup.find_all("a", attrs={"class":"btn_pay_terms btn_pay_terms_v2 ng-binding"})
+            flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
+            
+            for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
+                list_for_extend = []
+                list_for_extend.extend(flight_company.text)
+                list_for_extend.extend(flight_info.text)
+                list_for_extend.extend(flight_seat.text)
+                list_for_extend.extend(str(day))
+                flight_price = flight_price.text
+                flight_price = flight_price.replace(",","")
+                list_for_extend.extend(int(flight_price))
+                list_for_extend.extend(url)
+                flight_tickets.extend(list_for_extend)
 
-                browser.get(url)
-                sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
-                sort.click()
-                price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
-                price_sort.click()
+    sorted_flight_tickets = sorted(flight_tickets, key=lambda ticket: ticket[4])
+    return sorted_flight_tickets
+    browser.quit()
 
-                soup = BeautifulSoup(browser.page_source, "html.parser")
-                
-                flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
-                flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
-                flight_seats = soup.find_all("div", attrs={"class":"txt_seat ng-binding"})
-                flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
-                
-                for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
-                    list_for_append = []
-                    list_for_append.append(flight_company.text)
-                    list_for_append.append(flight_info.text)
-                    list_for_append.append(flight_seat.text)
-                    list_for_append.append(str(day))
-                    flight_price = flight_price.text
-                    flight_price = flight_price.replace(",","")
-                    list_for_append.append(int(flight_price))
-                    list_for_append.append(url)
-                    flight_tickets.append(list_for_append)
-            # 해외
-            else:
-                url = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
-
-                browser.get(url)
-                time.sleep(10)
-                sort = WebDriverWait(browser, 5).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
-                sort.click()
-                price_sort = WebDriverWait(browser, 8).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
-                price_sort.click()
-
-                soup = BeautifulSoup(browser.page_source, "html.parser")
-                
-                flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
-                flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
-                flight_seats = soup.find_all("a", attrs={"class":"btn_pay_terms btn_pay_terms_v2 ng-binding"})
-                flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
-                
-                for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
-                    list_for_extend = []
-                    list_for_extend.extend(flight_company.text)
-                    list_for_extend.extend(flight_info.text)
-                    list_for_extend.extend(flight_seat.text)
-                    list_for_extend.extend(str(day))
-                    flight_price = flight_price.text
-                    flight_price = flight_price.replace(",","")
-                    list_for_extend.extend(int(flight_price))
-                    list_for_extend.extend(url)
-                    flight_tickets.extend(list_for_extend)
-
-    finally:
-        sorted_flight_tickets = sorted(flight_tickets, key=lambda ticket: ticket[4])
-        return sorted_flight_tickets
-        browser.quit()
-
-def rt_compare(inputdata: list) -> str:
+def rt_compare(inputdata: list) -> list:
     arrival_airport = inputdata[0]
     reservation = inputdata[1]
 
@@ -148,7 +145,6 @@ def rt_compare(inputdata: list) -> str:
     international_departure_airport = "ICN,%20GMP"
     flight_tickets_departure = []
     flight_tickets_return = []
-    ticket_prices = []
 
     start_day = date(start_year, start_month, start_date)
     end_day = date(end_year, end_month, end_date)
@@ -158,142 +154,141 @@ def rt_compare(inputdata: list) -> str:
     browser.maximize_window()
 
     # 왕복
-    try:
-        for i in range(delta.days + 1):        
-                
-            # Ticket_Lists = [Company, Infomation, Class, Date, Price]       
-            day = start_day + timedelta(days=i)
-            str_day = str(day)
-            str_day.replace("-",".")
-                
-            str_period_date = str(day)
-            str_period_date.replace("-",".")
-
-            # Check domestic and make URL
-            if check_domestic(arrival_airport) == "domestic":
-                url_departure = get_domestic_ow_url(domestic_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
-                url_return = get_domestic_ow_url(arrival_airport, domestic_departure_airport, adult_num, child_num, infant_num, str_period_date + ".")
-                
-                # 가는날
-                browser.get(url_departure)
-                sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
-                sort.click()
-                price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
-                price_sort.click()
-
-                soup = BeautifulSoup(browser.page_source, "html.parser")
-
-                flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
-                flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
-                flight_seats = soup.find_all("div", attrs={"class":"txt_seat ng-binding"})
-                flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
-                        
-                for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
-                    list_for_append = []
-                    list_for_append.append(flight_company.text)
-                    list_for_append.append(flight_info.text)
-                    list_for_append.append(flight_seat.text)
-                    list_for_append.append(str(day))
-                    flight_price = flight_price.text
-                    flight_price = flight_price.replace(",","")
-                    list_for_append.append(int(flight_price))
-                    list_for_append.append(url_departure)
-                    flight_tickets_departure.append(list_for_append)
-
-                # 오는날
-
-                browser.get(url_return)
-                sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
-                sort.click()
-                price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
-                price_sort.click()
-
-                soup = BeautifulSoup(browser.page_source, "html.parser")
-
-                flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
-                flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
-                flight_seats = soup.find_all("div", attrs={"class":"txt_seat ng-binding"})
-                flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
-                        
-                for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
-                    list_for_append = []
-                    list_for_append.append(flight_company.text)
-                    list_for_append.append(flight_info.text)
-                    list_for_append.append(flight_seat.text)
-                    list_for_append.append(str(day))
-                    flight_price = flight_price.text
-                    flight_price = flight_price.replace(",","")
-                    list_for_append.append(int(flight_price))
-                    list_for_append.append(url_return)
-                    flight_tickets_return.append(list_for_append)
+    
+    for i in range(delta.days + 1):        
             
-            # 해외
-           
-            else:
-                url_departure = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
-                url_return = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_period_date + ".")
+        # Ticket_Lists = [Company, Infomation, Class, Date, Price]       
+        day = start_day + timedelta(days=i)
+        str_day = str(day)
+        str_day.replace("-",".")
+            
+        str_period_date = str(day)
+        str_period_date.replace("-",".")
 
-                # 가는날
-                browser.get(url_departure)
-                time.sleep(10)
-                sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
-                sort.click()
-                price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
-                price_sort.click()
+        # Check domestic and make URL
+        if check_domestic(arrival_airport) == "domestic":
+            url_departure = get_domestic_ow_url(domestic_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
+            url_return = get_domestic_ow_url(arrival_airport, domestic_departure_airport, adult_num, child_num, infant_num, str_period_date + ".")
+            
+            # 가는날
+            browser.get(url_departure)
+            sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+            sort.click()
+            price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
+            price_sort.click()
 
-                soup = BeautifulSoup(browser.page_source, "html.parser")
+            soup = BeautifulSoup(browser.page_source, "html.parser")
 
-                flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
-                flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
-                flight_seats = soup.find_all("a", attrs={"class":"btn_pay_terms btn_pay_terms_v2 ng-binding"})
-                flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
-                        
-                for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
-                    list_for_extend = []
-                    list_for_extend.extend(flight_company.text)
-                    list_for_extend.extend(flight_info.text)
-                    list_for_extend.extend(flight_seat.text)
-                    list_for_extend.extend(str(day))
-                    flight_price = flight_price.text
-                    flight_price = flight_price.replace(",","")
-                    list_for_extend.extend(int(flight_price))
-                    list_for_extend.extend(url_departure)
-                    flight_tickets_departure.extend(list_for_extend)
+            flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
+            flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
+            flight_seats = soup.find_all("div", attrs={"class":"txt_seat ng-binding"})
+            flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
+                    
+            for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
+                list_for_append = []
+                list_for_append.append(flight_company.text)
+                list_for_append.append(flight_info.text)
+                list_for_append.append(flight_seat.text)
+                list_for_append.append(str(day))
+                flight_price = flight_price.text
+                flight_price = flight_price.replace(",","")
+                list_for_append.append(int(flight_price))
+                list_for_append.append(url_departure)
+                flight_tickets_departure.append(list_for_append)
 
-                # 오는날
+            # 오는날
 
-                browser.get(url_return)
-                time.sleep(10)
-                sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
-                sort.click()
-                price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
-                price_sort.click()
+            browser.get(url_return)
+            sort = WebDriverWait(browser, 10).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+            sort.click()
+            price_sort = browser.find_element_by_xpath("//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")
+            price_sort.click()
 
-                soup = BeautifulSoup(browser.page_source, "html.parser")
+            soup = BeautifulSoup(browser.page_source, "html.parser")
 
-                flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
-                flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
-                flight_seats = soup.find_all("a", attrs={"class":"btn_pay_terms btn_pay_terms_v2 ng-binding"})
-                flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
-                        
-                for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
-                    list_for_extend = []
-                    list_for_extend.extend(flight_company.text)
-                    list_for_extend.extend(flight_info.text)
-                    list_for_extend.extend(flight_seat.text)
-                    list_for_extend.extend(str(day))
-                    flight_price = flight_price.text
-                    flight_price = flight_price.replace(",","")
-                    list_for_extend.extend(int(flight_price))
-                    list_for_extend.extend(url_departure)
-                    flight_tickets_departure.extend(list_for_extend) 
-    finally:    
-        sorted_ticket_list = []
-        sorted_flight_tickets_departure = sorted(flight_tickets_departure, key=lambda ticket: ticket[4])
-        sorted_ticket_list.extend(sorted_flight_tickets_departure)
-        sorted_flight_tickets_return = sorted(flight_tickets_return, key=lambda ticket: ticket[4])
-        sorted_ticket_list.extend(sorted_flight_tickets_return)
-        browser.quit()
-        return sorted_ticket_list
+            flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
+            flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
+            flight_seats = soup.find_all("div", attrs={"class":"txt_seat ng-binding"})
+            flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
+                    
+            for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
+                list_for_append = []
+                list_for_append.append(flight_company.text)
+                list_for_append.append(flight_info.text)
+                list_for_append.append(flight_seat.text)
+                list_for_append.append(str(day))
+                flight_price = flight_price.text
+                flight_price = flight_price.replace(",","")
+                list_for_append.append(int(flight_price))
+                list_for_append.append(url_return)
+                flight_tickets_return.append(list_for_append)
+        
+        # 해외
+        
+        else:
+            url_departure = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_day + ".")
+            url_return = get_international_ow_url(international_departure_airport, arrival_airport, adult_num, child_num, infant_num, str_period_date + ".")
 
+            # 가는날
+            browser.get(url_departure)
+            time.sleep(10)
+            sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+            sort.click()
+            price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
+            price_sort.click()
 
+            soup = BeautifulSoup(browser.page_source, "html.parser")
+
+            flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
+            flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
+            flight_seats = soup.find_all("a", attrs={"class":"btn_pay_terms btn_pay_terms_v2 ng-binding"})
+            flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
+                    
+            for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
+                list_for_extend = []
+                list_for_extend.extend(flight_company.text)
+                list_for_extend.extend(flight_info.text)
+                list_for_extend.extend(flight_seat.text)
+                list_for_extend.extend(str(day))
+                flight_price = flight_price.text
+                flight_price = flight_price.replace(",","")
+                list_for_extend.extend(int(flight_price))
+                list_for_extend.extend(url_departure)
+                flight_tickets_departure.extend(list_for_extend)
+
+            # 오는날
+
+            browser.get(url_return)
+            time.sleep(10)
+            sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/a")))
+            sort.click()
+            price_sort = WebDriverWait(browser, 15).until(ec.presence_of_element_located((By.XPATH, "//*[@id='content']/div[2]/div/div[3]/div[1]/div/ul/li[1]")))
+            price_sort.click()
+
+            soup = BeautifulSoup(browser.page_source, "html.parser")
+
+            flight_companies = soup.find_all("span", attrs={"class":"h_tit_result ng-binding"})
+            flight_infos = soup.find_all("div", attrs={"class":"route_info_box"})
+            flight_seats = soup.find_all("a", attrs={"class":"btn_pay_terms btn_pay_terms_v2 ng-binding"})
+            flight_prices = soup.find_all("span", attrs={"class":"txt_pay ng-binding"})
+                    
+            for flight_company, flight_info, flight_seat, flight_price in zip(flight_companies, flight_infos, flight_seats, flight_prices):
+                list_for_extend = []
+                list_for_extend.extend(flight_company.text)
+                list_for_extend.extend(flight_info.text)
+                list_for_extend.extend(flight_seat.text)
+                list_for_extend.extend(str(day))
+                flight_price = flight_price.text
+                flight_price = flight_price.replace(",","")
+                list_for_extend.extend(int(flight_price))
+                list_for_extend.extend(url_departure)
+                flight_tickets_departure.extend(list_for_extend) 
+    
+    sorted_ticket_list = []
+    sorted_flight_tickets_departure = sorted(flight_tickets_departure, key=lambda ticket: ticket[4])
+    sorted_ticket_list.extend(sorted_flight_tickets_departure)
+    sorted_flight_tickets_return = sorted(flight_tickets_return, key=lambda ticket: ticket[4])
+    sorted_ticket_list.extend(sorted_flight_tickets_return)
+    browser.quit()
+    
+    return sorted_ticket_list
