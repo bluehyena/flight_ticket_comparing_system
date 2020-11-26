@@ -163,7 +163,7 @@ class UIThird(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
     def createLayoutThird(self):
-        self.label = QLabel("최소 출발 기한")
+        self.label = QLabel("검색하려는 날의 시작일")
         self.label.setFont(self.systemFont)
         self.label.setFixedHeight(50)
 
@@ -232,7 +232,7 @@ class UIFourth(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
     def createLayoutFourth(self):
-        self.label = QLabel("최대 출발 기한")
+        self.label = QLabel("검색하려는 날의 시작일")
         self.label.setFont(self.systemFont)
         self.label.setFixedHeight(50)
 
