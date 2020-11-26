@@ -3,15 +3,19 @@
 import csv
 import datetime
 import sys
+import webbrowser
+
 import comparison
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon, QPixmap
 from PyQt5.QtWidgets import (QApplication, QWidget, QGroupBox, QHBoxLayout, QRadioButton, QCheckBox, QPushButton, QMenu,
                              QGridLayout, QVBoxLayout, QLabel, QCalendarWidget, QLineEdit, QLayout, QComboBox,
-                             QMainWindow, QScrollArea)
+                             QMainWindow, QScrollArea, QMessageBox)
 from PyQt5.QtCore import QDate, Qt
+from PyQt5.uic.properties import QtGui
 
 inputData = []
+compareList = []
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -57,7 +61,8 @@ class MainWindow(QMainWindow):
 class UIFirst(object):
     def setupUI(self, MainWindow):
         MainWindow.setWindowTitle('항공권 비교 분석기')
-        MainWindow.setGeometry(300, 300, 720, 480)
+        MainWindow.setGeometry(100, 100, 1080, 720)
+        MainWindow.setWindowIcon(QIcon('Icon.png'))
 
         self.centralwidget = QWidget(MainWindow)
 
@@ -68,6 +73,11 @@ class UIFirst(object):
 
 
     def createLayoutFirst(self):
+        self.label = QLabel("목적지를 선택해주세요")
+        self.label.setFont(self.systemFont)
+        self.label.setFixedHeight(50)
+        self.label.setAlignment(Qt.AlignCenter)
+
         self.comboBox = QComboBox()
         self.comboBox.setFixedHeight(50)
         self.comboBox.setFont(self.systemFont)
@@ -83,11 +93,17 @@ class UIFirst(object):
         self.pushButton.setFont(self.systemFont)
         self.pushButton.clicked.connect(self.aboutPushButton)
 
-        hbox = QHBoxLayout(self.centralwidget)
-        hbox.addWidget(self.comboBox)
-        hbox.addWidget(self.pushButton)
+        hbox1 = QHBoxLayout()
+        hbox1.addWidget(self.label)
 
-        return hbox
+        hbox2 = QHBoxLayout()
+        hbox2.addWidget(self.comboBox)
+        hbox2.addWidget(self.pushButton)
+
+        vbox = QVBoxLayout(self.centralwidget)
+        vbox.addLayout(hbox1)
+        vbox.addLayout(hbox2)
+        return vbox
 
     def aboutPushButton(self):
         inputData.append(self.comboBox.currentText()[-3:])
@@ -100,7 +116,7 @@ class UIFirst(object):
 class UISecond(object):
     def setupUI(self, MainWindow):
         MainWindow.setWindowTitle('항공권 비교 분석기')
-        MainWindow.setGeometry(300, 300, 720, 480)
+        MainWindow.setGeometry(100, 100, 1080, 720)
 
         self.centralwidget = QWidget(MainWindow)
 
@@ -110,6 +126,7 @@ class UISecond(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
     def createLayoutSecond(self):
+
         self.pushButton1 = QPushButton("편도")
         self.pushButton1.setFixedHeight(50)
         self.pushButton1.setFixedWidth(100)
@@ -136,7 +153,7 @@ class UISecond(object):
 class UIThird(object):
     def setupUI(self, MainWindow):
         MainWindow.setWindowTitle('항공권 비교 분석기')
-        MainWindow.setGeometry(300, 300, 720, 480)
+        MainWindow.setGeometry(100, 100, 1080, 720)
 
         self.centralwidget = QWidget(MainWindow)
 
@@ -205,7 +222,7 @@ class UIThird(object):
 class UIFourth(object):
     def setupUI(self, MainWindow):
         MainWindow.setWindowTitle('항공권 비교 분석기')
-        MainWindow.setGeometry(300, 300, 720, 480)
+        MainWindow.setGeometry(100, 100, 1080, 720)
 
         self.centralwidget = QWidget(MainWindow)
 
@@ -274,7 +291,7 @@ class UIFourth(object):
 class UISixth(object):
     def setupUI(self, MainWindow):
         MainWindow.setWindowTitle('항공권 비교 분석기')
-        MainWindow.setGeometry(300, 300, 720, 480)
+        MainWindow.setGeometry(100, 100, 1080, 720)
 
         self.centralwidget = QWidget(MainWindow)
 
@@ -346,7 +363,7 @@ class UISixth(object):
 class UISeventh(object):
     def setupUI(self, MainWindow):
         MainWindow.setWindowTitle('항공권 비교 분석기')
-        MainWindow.setGeometry(300, 300, 720, 480)
+        MainWindow.setGeometry(100, 100, 1080, 720)
 
         self.centralwidget = QWidget(MainWindow)
 
@@ -363,11 +380,9 @@ class UISeventh(object):
         vbox = QVBoxLayout(self.centralwidget)
         vbox2 = QVBoxLayout()
         groupBox = QGroupBox("가는 비행기")
-
         compareList = comparison.ow_compare(inputData)
         for line in compareList:
             hbox = QHBoxLayout()
-            print(line[3])
             self.label1 = QLabel(line[3])
             self.label1.setFont(self.systemFont)
             self.label1.setFixedHeight(50)
@@ -384,10 +399,17 @@ class UISeventh(object):
             self.label4.setFont(self.systemFont)
             self.label4.setFixedHeight(50)
 
+            self.pushButton = QPushButton("예매")
+            self.pushButton.setFont(self.systemFont)
+            self.pushButton.setFixedHeight(50)
+            self.pushButton.setFixedWidth(150)
+            self.pushButton.clicked.connect(lambda: self.aboutPushButton(line[5]))
+
             hbox.addWidget(self.label1)
             hbox.addWidget(self.label2)
             hbox.addWidget(self.label3)
             hbox.addWidget(self.label4)
+            hbox.addWidget(self.pushButton)
             vbox2.addLayout(hbox)
         groupBox.setLayout(vbox2)
         scrollArea = QScrollArea()
@@ -406,7 +428,7 @@ class UISeventh(object):
         groupBox2 = QGroupBox("오는 비행기")
 
         compareList = comparison.rt_compare(inputData)
-        
+
         for line in compareList[0]:
             hbox = QHBoxLayout()
             print(line[3])
@@ -426,10 +448,17 @@ class UISeventh(object):
             self.label4.setFont(self.systemFont)
             self.label4.setFixedHeight(50)
 
+            self.pushButton = QPushButton("예매")
+            self.pushButton.setFont(self.systemFont)
+            self.pushButton.setFixedHeight(50)
+            self.pushButton.setFixedWidth(150)
+            self.pushButton.clicked.connect(lambda: self.aboutPushButton(line[5]))
+
             hbox.addWidget(self.label1)
             hbox.addWidget(self.label2)
             hbox.addWidget(self.label3)
             hbox.addWidget(self.label4)
+            hbox.addWidget(self.pushButton)
             vbox2.addLayout(hbox)
         for line in compareList[1]:
             hbox = QHBoxLayout()
@@ -449,10 +478,17 @@ class UISeventh(object):
             self.label4.setFont(self.systemFont)
             self.label4.setFixedHeight(50)
 
+            self.pushButton = QPushButton("예매")
+            self.pushButton.setFont(self.systemFont)
+            self.pushButton.setFixedHeight(50)
+            self.pushButton.setFixedWidth(150)
+            self.pushButton.clicked.connect(lambda: self.aboutPushButton(line[5]))
+
             hbox.addWidget(self.label1)
             hbox.addWidget(self.label2)
             hbox.addWidget(self.label3)
             hbox.addWidget(self.label4)
+            hbox.addWidget(self.pushButton)
             vbox3.addLayout(hbox)
 
         groupBox.setLayout(vbox2)
@@ -476,9 +512,10 @@ class UISeventh(object):
         if self.ScrollBar.value() == self.ScrollBar.maximum():
             self.add_widget()
 
+    def aboutPushButton(self, url):
+        webbrowser.open(url)
+
 if __name__ == '__main__':
-    # for line in ow_comparison.ow_domestic_compare(['CJU', '편도', '2020', '11', '28', '2020', '11', '30', '0명', '0명', '1명']):
-    #     print(line)
     app = QApplication(sys.argv)
     ex = MainWindow()
     sys.exit(app.exec_())
