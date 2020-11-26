@@ -308,7 +308,7 @@ class UISixth(object):
         self.comboBox1 = QComboBox()
         self.comboBox1.setFont(self.systemFont)
         self.comboBox1.setFixedHeight(50)
-        self.comboBox1.setFixedWidth(100)
+        self.comboBox1.setFixedWidth(150)
         self.comboBox1.addItem("유아")
         for i in range(0, 11):
             self.comboBox1.addItem(str(i) + "명")
@@ -317,7 +317,7 @@ class UISixth(object):
         self.comboBox2.setFont(self.systemFont)
         self.comboBox2.addItem("청소년")
         self.comboBox2.setFixedHeight(50)
-        self.comboBox2.setFixedWidth(100)
+        self.comboBox2.setFixedWidth(150)
         for i in range(0, 11):
             self.comboBox2.addItem(str(i) + "명")
 
@@ -325,7 +325,7 @@ class UISixth(object):
         self.comboBox3.setFont(self.systemFont)
         self.comboBox3.addItem("성인")
         self.comboBox3.setFixedHeight(50)
-        self.comboBox3.setFixedWidth(100)
+        self.comboBox3.setFixedWidth(150)
         for i in range(0, 11):
             self.comboBox3.addItem(str(i) + "명")
 
@@ -381,6 +381,10 @@ class UISeventh(object):
         vbox2 = QVBoxLayout()
         groupBox = QGroupBox("가는 비행기")
         compareList = comparison.ow_compare(inputData)
+
+        hboxFirst = self.addFirst()
+        vbox2.addLayout(hboxFirst)
+
         for line in compareList:
             hbox = QHBoxLayout()
             self.label1 = QLabel(line[3])
@@ -419,7 +423,38 @@ class UISeventh(object):
 
         vbox.addWidget(scrollArea)
         return vbox
-    
+
+    def addFirst(self):
+        hbox = QHBoxLayout()
+        self.label1 = QLabel("날짜")
+        self.label1.setFont(self.systemFont)
+        self.label1.setFixedHeight(50)
+
+        self.label2 = QLabel("출발시간")
+        self.label2.setFont(self.systemFont)
+        self.label2.setFixedHeight(50)
+
+        self.label3 = QLabel("가격(원)")
+        self.label3.setFont(self.systemFont)
+        self.label3.setFixedHeight(50)
+
+        self.label4 = QLabel("항공사")
+        self.label4.setFont(self.systemFont)
+        self.label4.setFixedHeight(50)
+
+        self.label5 = QLabel("예매")
+        self.label5.setFont(self.systemFont)
+        self.label5.setFixedHeight(50)
+        self.label5.setFixedWidth(150)
+
+        hbox.addWidget(self.label1)
+        hbox.addWidget(self.label2)
+        hbox.addWidget(self.label3)
+        hbox.addWidget(self.label4)
+        hbox.addWidget(self.label5)
+
+        return hbox
+
     def createLayoutSeventhRT(self):
         vbox = QVBoxLayout(self.centralwidget)
         vbox2 = QVBoxLayout()
@@ -428,6 +463,9 @@ class UISeventh(object):
         groupBox2 = QGroupBox("오는 비행기")
 
         compareList = comparison.rt_compare(inputData)
+
+        hboxFirst = self.addFirst()
+        vbox2.addLayout(hboxFirst)
 
         for line in compareList[0]:
             hbox = QHBoxLayout()
@@ -460,6 +498,11 @@ class UISeventh(object):
             hbox.addWidget(self.label4)
             hbox.addWidget(self.pushButton)
             vbox2.addLayout(hbox)
+
+
+        hboxSecond = self.addFirst()
+        vbox3.addLayout(hboxSecond)
+
         for line in compareList[1]:
             hbox = QHBoxLayout()
             self.label1 = QLabel(line[3])
