@@ -11,10 +11,10 @@ The program will have informations about passengers of airplane, especially from
 
 # Role
 ## Data Crawling / Function Implementation
-* **[bluehyena](https://github.com/bluehyena)
+* [bluehyena](https://github.com/bluehyena)
 
 ## GUI Implementation
-* **[ssw03270](https://github.com/ssw03270)
+* [ssw03270](https://github.com/ssw03270)
 
 
 # Features
