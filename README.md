@@ -18,5 +18,5 @@ The program will have informations about passengers of airplane, especially from
 
 
 # Features
-This program is created based on web crawling.
-GUI is implemented using Pyqt5 to make it easy for users to input information.
+* This program is created based on web crawling.
+* GUI is implemented using Pyqt5 to make it easy for users to input information.
