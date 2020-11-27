@@ -53,7 +53,7 @@ def ow_compare(inputdata: list) -> list:
     options.add_argument("window-size=1920x1080")
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36")
 
-    browser = webdriver.Chrome('../chromedriver.exe', options=options)
+    browser = webdriver.Chrome('./chromedriver.exe', options=options)
     browser.maximize_window()
 
     for i in range(delta.days + 1):
@@ -157,7 +157,7 @@ def rt_compare(inputdata: list) -> list:
     options.add_argument("window-size=1920x1080")
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36")
 
-    browser = webdriver.Chrome('../chromedriver.exe', options=options)
+    browser = webdriver.Chrome('./chromedriver.exe', options=options)
     browser.maximize_window()
 
     # 왕복

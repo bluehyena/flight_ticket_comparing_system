@@ -82,7 +82,7 @@ class UIFirst(object):
         self.comboBox.setFixedHeight(50)
         self.comboBox.setFont(self.systemFont)
         airportList = []
-        for line in self.csvRead('../airportList.csv'):
+        for line in self.csvRead('./airportList.csv'):
             airportList.append(line[1] + '(' + line[0] + ')' + line[2])
         for airport in airportList:
             self.comboBox.addItem(airport)
@@ -232,7 +232,7 @@ class UIFourth(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
     def createLayoutFourth(self):
-        self.label = QLabel("검색하려는 날의 시작일")
+        self.label = QLabel("검색하려는 날의 마감일")
         self.label.setFont(self.systemFont)
         self.label.setFixedHeight(50)
 
